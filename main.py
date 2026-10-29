@@ -20,6 +20,7 @@ def add_task(
     """Save a task and add its ID to the processing queue."""
     task = Task(task_id, description)
     tasks.append(task)
+    # Keep only the ID in the queue; the linked list remains the source of task details.
     pending_tasks.enqueue(task_id)
     print(f"Added task {task.task_id}: {task.description}")
     return task
@@ -35,6 +36,7 @@ def delete_pending_task(
     if task is None or task.status != "pending":
         print(f"Task {task_id} was not found as a pending task.")
         return False
+    # Remove the task from both structures so it cannot be processed after cancellation.
     if not pending_tasks.remove(task_id):
         raise RuntimeError(f"Pending task {task_id} was missing from the queue.")
     if not tasks.remove(task):
@@ -59,6 +61,7 @@ def process_next_task(
         raise RuntimeError(f"Queued task {task_id} is missing or not pending.")
 
     task.status = "completed"
+    # The stack records completion order, making the latest completion easiest to undo.
     completed_tasks.push(task)
     print(f"Completed task {task.task_id}: {task.description}")
     return task
@@ -75,6 +78,7 @@ def undo_last_completion(
 
     task = completed_tasks.pop()
     task.status = "pending"
+    # Reopened tasks go to the back, preserving the queue's first-in, first-out rule.
     pending_tasks.enqueue(task.task_id)
     print(f"Undid completion of task {task.task_id}; it was returned to the queue.")
     return task
@@ -91,6 +95,7 @@ def show_tasks(tasks: SinglyLinkedList[Task]) -> None:
 
 
 def run_demo() -> None:
+    # Each structure has one role: task records, pending order, or undo history.
     tasks: SinglyLinkedList[Task] = SinglyLinkedList()
     pending_tasks: Queue[int] = Queue()
     completed_tasks: Stack[Task] = Stack()

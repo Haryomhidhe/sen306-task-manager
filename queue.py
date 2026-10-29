@@ -25,6 +25,7 @@ class Queue(Generic[T]):
         """Add an item to the back of the queue."""
         node = _QueueNode(item)
         if self._tail is None:
+            # The first node is both the front and the back of the queue.
             self._head = node
         else:
             self._tail.next = node
@@ -39,6 +40,7 @@ class Queue(Generic[T]):
         self._head = self._head.next
         self._size -= 1
         if self._head is None:
+            # Keep both ends empty after removing the final node.
             self._tail = None
         return item
 
@@ -55,6 +57,7 @@ class Queue(Generic[T]):
 
         while current is not None:
             if current.value == item:
+                # Link around the match without disturbing the other queued items.
                 if previous is None:
                     self._head = current.next
                 else:

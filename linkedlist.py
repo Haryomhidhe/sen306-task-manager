@@ -26,6 +26,7 @@ class SinglyLinkedList(Generic[T]):
         """Add a value to the end of the list."""
         node = _Node(value)
         if self._tail is None:
+            # An empty list starts with the same node at both ends.
             self._head = node
         else:
             self._tail.next = node
@@ -48,6 +49,7 @@ class SinglyLinkedList(Generic[T]):
 
         while current is not None:
             if current.value == value:
+                # A singly linked list removes a node by reconnecting its predecessor.
                 if previous is None:
                     self._head = current.next
                 else:
@@ -56,6 +58,7 @@ class SinglyLinkedList(Generic[T]):
                     self._tail = previous
                 self._size -= 1
                 if self._head is None:
+                    # Reset the tail too when the list becomes empty.
                     self._tail = None
                 return True
             previous = current

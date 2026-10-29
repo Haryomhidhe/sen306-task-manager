@@ -19,6 +19,7 @@ class Stack(Generic[T]):
         """Remove and return the top item."""
         if self.is_empty():
             raise IndexError("pop from empty stack")
+        # List append and pop at the end implement last-in, first-out behavior.
         return self._items.pop()
 
     def peek(self) -> T:
